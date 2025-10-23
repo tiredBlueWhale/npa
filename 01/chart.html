@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MermaidJS Basic Example</title>
+  <!-- Load MermaidJS from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <!-- Initialize Mermaid -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .mermaid {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+
+    #service-t1 path {
+      fill: blue !important;
+      stroke: black !important;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+          // Primary color for nodes
+          primaryColor: '#ff4500',
+          // Background color for nodes
+          primaryBorderColor: '#333',
+          // Text color for nodes
+          primaryTextColor: '#fff',
+          // Background color for the diagram
+          lineColor: '#ff4500',
+          // Background color for the diagram
+          backgroundColor: '#f9f9f9',
+          // Font family
+          fontFamily: 'Arial',
+        },
+      });
+
+      mermaid.registerIconPacks([{
+        name: 'mat',
+        loader: () =>
+          fetch('https://unpkg.com/@iconify-json/material-symbols@1.2.42/icons.json').then((res) => res.json()),
+      },]);
+
+
+      const pod = (pod_i = 0) => {
+        let pod = `group pod${pod_i}[Pod${pod_i}]\n\n`;
+        // top switches
+        for (let i = 1; i <= 3; i++) {
+          pod += `service t${i}(mat:circle) [T${i}] in pod${pod_i}\n`;
+        }
+        // bottom switches
+        for (let i = 1; i <= 3; i++) {
+          pod += `service b${i}(mat:circle) [B${i}] in pod${pod_i}\n`;
+        }
+        pod += '\n';
+
+        for (let t = 1; t <= 3; t++) {
+          for (let b = 1; b <= 3; b++) {
+            pod += `t${t}:B -- T:b${b}\n`;
+          }
+        }
+        return pod
+      }
+
+      const div = document.getElementsByClassName("mermaid")[0]
+      div.innerHTML = 'architecture-beta\n'
+      div.innerHTML += pod()
+      console.log(div.innerHTML)
+    });
+  </script>
+</head>
+
+<body>
+  <!-- <h1>MermaidJS Basic Example</h1> -->
+  <!-- <p>Here is a simple flowchart rendered with MermaidJS:</p> -->
+
+  <!-- Mermaid Diagram Container -->
+  <div class="mermaid">
+    architecture-beta
+    group pod1[Pod1]
+
+    service t1(mat:circle) [T1] in pod1
+    service t2 [T1] in pod1
+    service t3 [T3] in pod1
+    service b1 [B1] in pod1
+    service b2 [B1] in pod1
+    service b3 [B3] in pod1
+
+    t1:B -- T:b1
+    %% disk1:T -- B:server
+    %% disk2:T -- B:db
+  </div>
+
+  <!-- <p>You can edit the diagram code above and refresh the page to see changes.</p> -->
+</body>
+
+</html>
